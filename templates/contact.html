@@ -1,2 +1,12 @@
 <h1>Contact Page</h1>
 <p>Get in touch my bro</p>
+<ul>
+    {{range .}}
+        {{template "qa" .}}
+    {{end}}
+</ul>
+
+
+{{define "qa"}}
+<li><b>{{.Question}}</b>{{.Answer}}</li>
+{{end}}

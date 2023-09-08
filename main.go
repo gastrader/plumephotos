@@ -17,7 +17,7 @@ func main() {
 	r.Get("/", controllers.StaticHandler(tpl))
 
 	tpl = views.Must(views.ParseFS(templates.FS, "contact.html"))
-	r.Get("/contact", controllers.StaticHandler(tpl))
+	r.Get("/contact", controllers.FAQ(tpl))
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page notttt Found", http.StatusNotFound)
