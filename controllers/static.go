@@ -14,7 +14,7 @@ func StaticHandler(tpl views.Template) http.HandlerFunc {
 }
 
 func FAQ(tpl views.Template) http.HandlerFunc {
-	questions := []struct{
+	questions := []struct {
 		Question string
 		Answer   template.HTML
 	}{
@@ -32,7 +32,7 @@ func FAQ(tpl views.Template) http.HandlerFunc {
 		},
 		{
 			Question: "How do I contact you bro?",
-			Answer:   `Please do not contact me at <a href="mailto:gaslimits@gmail.com">gaslimits@gmail.com</>`,
+			Answer:   `Please do not contact me at <a href="mailto:gaslimits@gmail.com">gaslimits@gmail.com</a>`,
 		},
 	}
 	return func(w http.ResponseWriter, r *http.Request) {
