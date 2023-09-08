@@ -3,21 +3,26 @@ package main
 import (
 	"fmt"
 	"net/http"
+
+	"github.com/gastrader/website/controllers"
+	"github.com/gastrader/website/templates"
+	"github.com/gastrader/website/views"
+	"github.com/go-chi/chi/v5"
 )
 
 func main() {
-	http.HandleFunc("/", homeHandler)
-	http.HandleFunc("/contact", contactHandler)
-	fmt.Println("starting the server on :3000...")
-	http.ListenAndServe(":3000", nil)
-}
+	r := chi.NewRouter()
 
-func homeHandler(w http.ResponseWriter, r *http.Request){
-	w.Header().Add("Content-Type", "text/html")
-	fmt.Fprint(w, "<h1>Hello there matey!</h1>")
-}
+	tpl := views.Must(views.ParseFS(templates.FS, "home.html"))
+	r.Get("/", controllers.StaticHandler(tpl))
 
-func contactHandler(w http.ResponseWriter, r *http.Request){
-	w.Header().Add("Content-Type", "text/html")
-	fmt.Fprint(w, "<h1>CONTACT PAGE</h1><p>To get in touch, email me at: <a href=\"mailto:gaslimits@gmail.com\">gavinp96@gmail.com</a></p>")
+	tpl = views.Must(views.ParseFS(templates.FS, "contact.html"))
+	r.Get("/contact", controllers.StaticHandler(tpl))
+
+	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
+		http.Error(w, "Page notttt Found", http.StatusNotFound)
+	})
+
+	fmt.Println("starting the server on :3333...")
+	http.ListenAndServe("127.0.0.1:3333", r)
 }
