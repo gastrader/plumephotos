@@ -1,16 +1,18 @@
 {{template "header" .}}
-
-<h1>Contact Page</h1>
-<p>Get in touch my bro</p>
-<ul>
+<div class="px-6">
+    <h1 class="py-4 text-4xl semibold tracking-tight">Contact Page</h1>
+    <ul class="grid grid-cols-2 gap-16">
     {{range .}}
         {{template "qa" .}}
     {{end}}
 </ul>
-
+</div>
 
 {{define "qa"}}
-<li><b>{{.Question}}</b>{{.Answer}}</li>
+<li class="border-t border-indigo-200 py-1 px-2">
+    <span class="block text-lg text-gray-700 semibold">{{.Question}}</span> 
+    <span class="block text-sm text-gray-400 ">{{.Answer}}</span>
+</li>
 {{end}}
 
 {{template "footer" .}}

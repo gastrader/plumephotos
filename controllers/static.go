@@ -19,19 +19,19 @@ func FAQ(tpl views.Template) http.HandlerFunc {
 		Answer   template.HTML
 	}{
 		{
-			Question: "Is it free?",
+			Question: "Is it free? ",
 			Answer:   "No its not",
 		},
 		{
-			Question: "Is it not?",
+			Question: "Is it not? ",
 			Answer:   "No its def not!",
 		},
 		{
-			Question: "Where da office?",
+			Question: "Where da office? ",
 			Answer:   "Remote mny guy!",
 		},
 		{
-			Question: "How do I contact you bro?",
+			Question: "How do I contact you bro? ",
 			Answer:   `Please do not contact me at <a href="mailto:gaslimits@gmail.com">gaslimits@gmail.com</a>`,
 		},
 	}
