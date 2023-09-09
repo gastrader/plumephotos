@@ -39,13 +39,12 @@ func Parse(filepath string) (Template, error) {
 	}, nil
 }
 
-func (t Template) Execute(w http.ResponseWriter, data interface{}) error {
+func (t Template) Execute(w http.ResponseWriter, data interface{}) {
 	w.Header().Add("Content-Type", "text/html")
 	err := t.htmlTpl.Execute(w, data)
 	if err != nil {
 		log.Printf("rendering template: %v", err)
 		http.Error(w, "error rendering template my man.", http.StatusInternalServerError)
-		return nil
+		return 
 	}
-	return nil
 }
