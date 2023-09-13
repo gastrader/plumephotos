@@ -8,6 +8,7 @@ import (
 	"github.com/gastrader/website/templates"
 	"github.com/gastrader/website/views"
 	"github.com/go-chi/chi/v5"
+	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
 func main() {
@@ -31,6 +32,7 @@ func main() {
 		http.Error(w, "Page notttt Found", http.StatusNotFound)
 	})
 
-	fmt.Println("starting the server on :3333...")
-	http.ListenAndServe("127.0.0.1:3333", r)
+	fmt.Println("starting the server on :3000...")
+	http.ListenAndServe("127.0.0.1:3000", r)
+	
 }
