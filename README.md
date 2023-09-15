@@ -1,4 +1,4 @@
-# website
+# PHOTOSHARING WEBSITE
 
 docker compose up/down
 

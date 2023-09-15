@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gastrader/website/controllers"
+	"github.com/gastrader/website/models"
 	"github.com/gastrader/website/templates"
 	"github.com/gastrader/website/views"
 	"github.com/go-chi/chi/v5"
@@ -20,8 +21,19 @@ func main() {
 	tpl = views.Must(views.ParseFS(templates.FS, "contact.html", "tailwind.html"))
 	r.Get("/contact", controllers.FAQ(tpl))
 
-	//MUST is panicing if there is error that template being rendered.
-	usersC := controllers.Users{}
+	cfg := models.DefaultPostgresConfig()
+	fmt.Println("The config is: ", cfg)
+	db, err := models.Open(cfg)
+	if err != nil{
+		panic(err)
+	}
+	defer db.Close()
+	userService := models.UserService{
+		DB: db,
+	}
+	usersC := controllers.Users{
+		UserService: &userService, //TODO = set this
+	}
 	usersC.Templates.New = views.Must(views.ParseFS(
 		templates.FS,
 		"signup.html", "tailwind.html"))
