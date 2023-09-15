@@ -10,6 +10,7 @@ import (
 type Users struct {
 	Templates struct {
 		New Template
+		SignIn Template
 	}
 	UserService *models.UserService
 }
@@ -27,7 +28,6 @@ func (u Users) New(w http.ResponseWriter, r *http.Request) {
 	u.Templates.New.Execute(w, data)
 }
 
-//COULD USE BODYPARSER FROM GORILLA - PART OF FIBER...
 func (u Users) Create(w http.ResponseWriter, r *http.Request){
 	email := r.FormValue("email")
 	password := r.FormValue("password")
@@ -39,4 +39,34 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request){
 		return 
 	}
 	fmt.Fprintf(w, "User Created: %+v", user)
+}
+
+func (u Users) SignIn(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email string
+	}
+	data.Email = r.FormValue("email")
+	u.Templates.SignIn.Execute(w, data)
+}
+
+func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
+		var data struct {
+		Email string
+		Password string
+	}
+	data.Email = r.FormValue("email")
+	data.Password = r.FormValue("password")
+	user, err := u.UserService.Authenticate(data.Email, data.Password)
+	if err != nil{
+		fmt.Println(err)
+		http.Error(w, "Login did not work .", http.StatusInternalServerError)
+		return 
+	}
+	cookie := http.Cookie{
+		Name: "email",
+		Value: user.Email,
+		Path: "/",
+	}
+	http.SetCookie(w, &cookie)
+	fmt.Fprintf(w, "User Signed in: %+v", user)
 }

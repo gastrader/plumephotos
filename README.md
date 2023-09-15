@@ -17,8 +17,8 @@ CREATE TABLE users (
 ```insert into table```
 INSERT INTO users VALUES (1, 22, 'John','Smith','john@smith.com');
 ```or this way```
-INSERT INTO users(id, age, email, first_name, last_name)
-VALUES (2, 23, 'gavy@gmail.com', 'gavin','plumo');
+INSERT INTO users(id, email, password_hash)
+VALUES (2, 'gav@gmail.com', 'gfdsfgsfdfsdfdsf232323');
 
 ```udpate record```
 UPDATE users SET first_name = 'gavin' WHERE id = 1;
