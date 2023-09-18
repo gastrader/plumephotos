@@ -59,7 +59,7 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 	user, err := u.UserService.Authenticate(data.Email, data.Password)
 	if err != nil{
 		fmt.Println(err)
-		http.Error(w, "Login did not work .", http.StatusInternalServerError)
+		http.Error(w, "Login did not work..", http.StatusInternalServerError)
 		return 
 	}
 	cookie := http.Cookie{
