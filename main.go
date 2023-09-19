@@ -9,6 +9,7 @@ import (
 	"github.com/gastrader/website/templates"
 	"github.com/gastrader/website/views"
 	"github.com/go-chi/chi/v5"
+	"github.com/gorilla/csrf"
 	_ "github.com/jackc/pgx/v4/stdlib"
 )
 
@@ -54,6 +55,10 @@ func main() {
 	})
 
 	fmt.Println("starting the server on :3000..")
-	http.ListenAndServe("127.0.0.1:3000", r)
+
+	csrfKey := "u2312casdyug682yubbcjyuihyu3bnsx"
+	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
+	
+	http.ListenAndServe("127.0.0.1:3000", csrfMw(r))
 
 }
