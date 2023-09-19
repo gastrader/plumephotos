@@ -9,14 +9,14 @@ import (
 
 type Users struct {
 	Templates struct {
-		New Template
+		New    Template
 		SignIn Template
 	}
 	UserService *models.UserService
 }
 
-type UserData struct{
-	Email string
+type UserData struct {
+	Email    string
 	Password string
 }
 
@@ -28,15 +28,15 @@ func (u Users) New(w http.ResponseWriter, r *http.Request) {
 	u.Templates.New.Execute(w, data)
 }
 
-func (u Users) Create(w http.ResponseWriter, r *http.Request){
+func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 	email := r.FormValue("email")
 	password := r.FormValue("password")
-	
+
 	user, err := u.UserService.Create(email, password)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
 		http.Error(w, "Login did not work .", http.StatusInternalServerError)
-		return 
+		return
 	}
 	fmt.Fprintf(w, "User Created: %+v", user)
 }
@@ -50,23 +50,34 @@ func (u Users) SignIn(w http.ResponseWriter, r *http.Request) {
 }
 
 func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
-		var data struct {
-		Email string
+	var data struct {
+		Email    string
 		Password string
 	}
 	data.Email = r.FormValue("email")
 	data.Password = r.FormValue("password")
 	user, err := u.UserService.Authenticate(data.Email, data.Password)
-	if err != nil{
+	if err != nil {
 		fmt.Println(err)
-		http.Error(w, "Login did not work..", http.StatusInternalServerError)
-		return 
+		http.Error(w, "Login did not work .", http.StatusInternalServerError)
+		return
 	}
 	cookie := http.Cookie{
-		Name: "email",
-		Value: user.Email,
-		Path: "/",
+		Name:     "email",
+		Value:    user.Email,
+		Path:     "/",
+		HttpOnly: true,
 	}
 	http.SetCookie(w, &cookie)
 	fmt.Fprintf(w, "User Signed in: %+v", user)
+}
+
+func (u Users) CurrentUser(w http.ResponseWriter, r *http.Request) {
+	email, err := r.Cookie("email")
+	if err != nil {
+		fmt.Fprint(w, "Email cookie could not be read")
+		return
+	}
+	fmt.Fprintf(w, "email cookie: %s\n", email.Value)
+	fmt.Fprintf(w, "headers: %+v\n", r.Header)
 }

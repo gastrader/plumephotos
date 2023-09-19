@@ -18,7 +18,7 @@ func Open(cfg PostgresConfig) (*sql.DB, error){
 func DefaultPostgresConfig() PostgresConfig{
 	return  PostgresConfig{
 	Host:    "localhost",
-	Port:     "5432",
+	Port:     "4321",
 	User:     "postgres",
 	Password: "admin123",
 	Database: "website",

@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: admin123
       POSTGRES_DB: website
     ports:
-      - 5432:5432 #port on our machine : port on container
+      - 4321:5432 #port on our machine : port on container
 
   adminer:
     image: adminer
