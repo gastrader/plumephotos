@@ -6,3 +6,4 @@ import "embed"
 var FS embed.FS
 
 //will stick all files inside embed.FS file system
+
