@@ -32,8 +32,13 @@ func main() {
 	userService := models.UserService{
 		DB: db,
 	}
+	sessionService := models.SessionService{
+		DB: db,
+	}
+
 	usersC := controllers.Users{
 		UserService: &userService, //TODO = set this
+		SessionService: &sessionService,
 	}
 	//TEMPLATE PARSING
 	usersC.Templates.New = views.Must(views.ParseFS(
@@ -42,7 +47,7 @@ func main() {
 	usersC.Templates.SignIn = views.Must(views.ParseFS(
 		templates.FS,
 		"signin.html", "tailwind.html"))
-		
+
 	//ROUTE HANDLING
 	r.Get("/signup", usersC.New)
 	r.Post("/users", usersC.Create)
@@ -58,7 +63,7 @@ func main() {
 
 	csrfKey := "u2312casdyug682yubbcjyuihyu3bnsx"
 	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
-	
+
 	http.ListenAndServe("127.0.0.1:3000", csrfMw(r))
 
 }
