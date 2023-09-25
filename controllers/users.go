@@ -45,6 +45,7 @@ func (u Users) Create(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/signin", http.StatusFound)
 		return
 	}
+	fmt.Printf("The session value is: ", session.Token)
 	setCookie(w, CookieSession, session.Token)
 	http.Redirect(w, r, "/users/me", http.StatusFound)
 	fmt.Fprintf(w, "User Created: %+v", user)
