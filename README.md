@@ -25,3 +25,6 @@ UPDATE users SET first_name = 'gavin' WHERE id = 1;
 
 ```delete record```
 DELETE FROM users WHERE id=1;
+
+```alter existing table```
+ALTER TABLE sessions ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id);

@@ -5,6 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gastrader/website/controllers"
+	"github.com/gastrader/website/migrations"
 	"github.com/gastrader/website/models"
 	"github.com/gastrader/website/templates"
 	"github.com/gastrader/website/views"
@@ -23,11 +24,17 @@ func main() {
 	r.Get("/contact", controllers.FAQ(tpl))
 
 	cfg := models.DefaultPostgresConfig()
+	//host=localhost port=4321 user=postgres password=admin123 dbname=website sslmode=disable
 	db, err := models.Open(cfg)
 	if err != nil {
 		panic(err)
 	}
 	defer db.Close()
+
+	err = models.MigrateFS(db, migrations.FS, ".")
+	if err != nil{
+		panic(err)
+	}
 
 	userService := models.UserService{
 		DB: db,
@@ -53,18 +60,22 @@ func main() {
 	r.Post("/users", usersC.Create)
 	r.Get("/signin", usersC.SignIn)
 	r.Post("/signin", usersC.ProcessSignIn)
-	r.Get("/users/me", usersC.CurrentUser)
 	r.Post("/signout", usersC.ProcessSignOut)
+	r.Get("/users/me", usersC.CurrentUser)
+
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Page notttt Found", http.StatusNotFound)
 	})
 
-	fmt.Println("starting the server on :3000..")
+	umw := controllers.UserMiddleware{
+		SessionService: &sessionService,
+	}
 
 	csrfKey := "u2312casdyug682yubbcjyuihyu3bnsx"
 	csrfMw := csrf.Protect([]byte(csrfKey), csrf.Secure(false))
 
-	http.ListenAndServe("127.0.0.1:3000", csrfMw(r))
+	fmt.Println("starting the server on :3000..")
+	http.ListenAndServe("127.0.0.1:3000", csrfMw(umw.SetUser(r)))
 
 }
