@@ -65,7 +65,7 @@ func main() {
 
 
 	r.NotFound(func(w http.ResponseWriter, r *http.Request) {
-		http.Error(w, "Page notttt Found", http.StatusNotFound)
+		http.Error(w, "Page Not Found", http.StatusNotFound)
 	})
 
 	umw := controllers.UserMiddleware{
