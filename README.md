@@ -2,6 +2,8 @@
 
 docker compose up/down
 
+goose create 'name' sql
+
 ```connect to postgres docker```
 docker exec -it website-db-1 psql -U postgres -d website 
 
