@@ -1,29 +1,31 @@
 package main
 
 import (
-	"html/template"
-	"os"
+	"fmt"
+
+	"github.com/gastrader/website/models"
 )
 
-type User struct {
-	Name string
-	Age int
-	Bio string
-}
+
+const (
+	host     = "sandbox.smtp.mailtrap.io"
+	port     = 25
+	username = "297bd7f4a812a3"
+	password = "b25328c4118822"
+)
 
 func main() {
-	t, err := template.ParseFiles("hello.html")
+	es := models.NewEmailService(models.SMTPConfig{
+		Host:     host,
+		Port:     port,
+		Username: username,
+		Password: password,
+	})
+	err := es.ForgotPassword("gavinp96@gmail.com", "https://localdankness.com")
 	if err != nil {
 		panic(err)
+
 	}
-	user := User{
-		Name: "johnny",
-		Age: 1232,
-		Bio: `<script>alert("hacked")</script>`,
-	}
-	err = t.Execute(os.Stdout, user)
-	if err != nil {
-		panic(err)
-	}
+	fmt.Println("email sent!")
 
 }
