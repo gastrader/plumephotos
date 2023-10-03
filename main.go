@@ -100,6 +100,8 @@ func main() {
 	usersC.Templates.New = views.Must(views.ParseFS(templates.FS, "signup.html", "tailwind.html"))
 	usersC.Templates.SignIn = views.Must(views.ParseFS(templates.FS, "signin.html", "tailwind.html"))
 	usersC.Templates.ForgotPassword = views.Must(views.ParseFS(templates.FS, "forgot_pw.html", "tailwind.html"))
+	usersC.Templates.CheckYourEmail = views.Must(views.ParseFS(templates.FS, "check-your-email.html", "tailwind.html"))
+	usersC.Templates.ResetPassword = views.Must(views.ParseFS(templates.FS, "reset-pw.html", "tailwind.html"))
 	//setup router and routes
 	r := chi.NewRouter()
 	r.Use(csrfMw)
@@ -118,6 +120,8 @@ func main() {
 	r.Post("/signout", usersC.ProcessSignOut)
 	r.Get("/forgot-pw", usersC.ForgotPassword)
 	r.Post("/forgot-pw", usersC.ProcessForgotPassword)
+	r.Get("/reset-pw", usersC.ResetPassword)
+	r.Post("/reset-pw", usersC.ProcessResetPassword)
 	r.Get("/users/me", usersC.CurrentUser)
 	r.Route("/users/me", func(r chi.Router) {
 		r.Use(umw.RequireUser)
@@ -129,7 +133,7 @@ func main() {
 
 	fmt.Printf("starting the server on %s..\n", cfg.Server.Address)
 	err = http.ListenAndServe(cfg.Server.Address, r)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 
