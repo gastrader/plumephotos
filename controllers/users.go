@@ -3,6 +3,7 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"net/url"
 
 	"github.com/gastrader/website/context"
 	"github.com/gastrader/website/models"
@@ -12,9 +13,13 @@ type Users struct {
 	Templates struct {
 		New    Template
 		SignIn Template
+		ForgotPassword Template
+		CheckYourEmail Template
 	}
 	UserService    *models.UserService
 	SessionService *models.SessionService
+	PasswordResetService *models.PasswordResetService
+	EmailService *models.EmailService
 }
 
 type UserData struct {
@@ -108,6 +113,42 @@ func (u Users) ProcessSignOut(w http.ResponseWriter, r *http.Request) {
 
 type UserMiddleware struct {
 	SessionService *models.SessionService
+}
+
+//allows us to have URL like mysite.com/forgot-pw?email=jon@jon.com
+func (u Users) ForgotPassword(w http.ResponseWriter, r *http.Request){
+	var data struct {
+		Email string
+	}
+	data.Email = r.FormValue("email")
+	u.Templates.ForgotPassword.Execute(w, r, data)
+}
+
+func (u Users) ProcessForgotPassword(w http.ResponseWriter, r *http.Request) {
+	var data struct {
+		Email string
+	}
+	data.Email = r.FormValue("email")
+	pwReset, err := u.PasswordResetService.Create(data.Email)
+	if err != nil{
+		//handle other cases if user DNE w/ that email address
+		fmt.Println(err)
+		http.Error(w, "Something went wrong..", http.StatusInternalServerError)
+		return
+	}
+	vals := url.Values{
+		"token": {pwReset.Token},
+	}
+	resetURL := "https://www.plumephotos.com/reset-pw?"+ vals.Encode()
+	err = u.EmailService.ForgotPassword(data.Email, resetURL)
+	if err != nil{
+		fmt.Println(err)
+		http.Error(w, "Something went wrong..", http.StatusInternalServerError)
+		return
+	}
+	//do not render reset token.
+	u.Templates.CheckYourEmail.Execute(w, r, data)
+
 }
 
 func (umw UserMiddleware) SetUser(next http.Handler) http.Handler {
