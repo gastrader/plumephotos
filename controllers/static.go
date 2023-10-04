@@ -12,6 +12,7 @@ func StaticHandler(tpl Template) http.HandlerFunc {
 	}
 }
 
+
 func FAQ(tpl Template) http.HandlerFunc {
 	questions := []struct {
 		Question string

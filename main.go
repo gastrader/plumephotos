@@ -29,6 +29,8 @@ type config struct {
 	}
 }
 
+
+
 func loadEnvConfig() (config, error) {
 	var cfg config
 	err := godotenv.Load()
@@ -54,6 +56,7 @@ func loadEnvConfig() (config, error) {
 }
 
 func main() {
+	
 	cfg, err := loadEnvConfig()
 	if err != nil {
 		panic(err)
@@ -164,3 +167,4 @@ func main() {
 	}
 
 }
+
