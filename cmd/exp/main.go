@@ -10,16 +10,15 @@ import (
 	"github.com/joho/godotenv"
 )
 
-
 func main() {
 	err := godotenv.Load()
-	if err != nil{
+	if err != nil {
 		log.Fatal("Error loading .env")
 	}
 	host := os.Getenv("SMTP_HOST")
 	portStr := os.Getenv("SMTP_PORT")
 	port, err := strconv.Atoi(portStr)
-	if err != nil{
+	if err != nil {
 		panic(err)
 	}
 	username := os.Getenv("SMTP_USERNAME")
@@ -36,5 +35,6 @@ func main() {
 
 	}
 	fmt.Println("email sent!")
-
+	// gs := models.GalleryService{}
+	// fmt.Println(gs.Images(7))
 }
