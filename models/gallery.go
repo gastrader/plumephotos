@@ -24,7 +24,7 @@ func (gs *GalleryService) Create(title string, userID int) (*Gallery, error){
 		UserID: userID,
 	}
 	row := gs.DB.QueryRow(`
-		INTER INTO galleries (title, user_id)
+		INSERT INTO galleries (title, user_id)
 		VALUES ($1, $2) RETURNING id;`, gallery.Title, gallery.UserID)
 	err := row.Scan(&gallery.ID)
 	if err != nil{
@@ -92,7 +92,7 @@ func (gs *GalleryService) Delete(id int) error{
 		DELETE FROM galleries
 		WHERE id = $1;`, id)
 	if err != nil {
-		return fmt.Errorf("delete gallery: %w", err)
+		return fmt.Errorf("delete gallery.: %w", err)
 	}
 	return nil
 }
