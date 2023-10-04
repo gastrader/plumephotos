@@ -111,6 +111,7 @@ func main() {
 	}
 	galleriesC.Templates.New = views.Must(views.ParseFS(templates.FS, "galleries/new.html", "tailwind.html"))
 	galleriesC.Templates.Edit = views.Must(views.ParseFS(templates.FS, "galleries/edit.html", "tailwind.html"))
+	galleriesC.Templates.Index = views.Must(views.ParseFS(templates.FS, "galleries/index.html", "tailwind.html"))
 
 	//setup router and routes
 	r := chi.NewRouter()
@@ -146,8 +147,10 @@ func main() {
 		r.Group(func(r chi.Router) {
 			r.Use(umw.RequireUser)
 			r.Get("/new", galleriesC.New)
+			r.Get("/", galleriesC.Index)
 			r.Post("/", galleriesC.Create)
 			r.Get("/{id}/edit", galleriesC.Edit)
+			r.Post("/{id}", galleriesC.Update)
 		})
 
 	})

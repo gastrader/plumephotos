@@ -13,8 +13,9 @@ import (
 
 type Galleries struct {
 	Templates struct {
-		New  Template
-		Edit Template
+		New   Template
+		Edit  Template
+		Index Template
 	}
 	GalleryService *models.GalleryService
 }
@@ -66,8 +67,8 @@ func (g Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "You are not authorized to edit this gallery", http.StatusForbidden)
 		return
 	}
-	var data struct{
-		ID int
+	var data struct {
+		ID    int
 		Title string
 	}
 	data.ID = gallery.ID
@@ -75,4 +76,59 @@ func (g Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 
 	g.Templates.Edit.Execute(w, r, data)
 
+}
+
+func (g Galleries) Update(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		http.Error(w, "Invalid ID", http.StatusNotFound)
+		return
+	}
+	//ensure gallery exists
+	gallery, err := g.GalleryService.ByID(id)
+	if err != nil {
+		if errors.Is(err, models.ErrNotFound) {
+			http.Error(w, "Gallery not found", http.StatusNotFound)
+			return
+		}
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		return
+	}
+
+	//does user own gallery/edit access
+	user := context.User(r.Context())
+	if gallery.UserID != user.ID {
+		http.Error(w, "You are not authorized to edit this gallery", http.StatusForbidden)
+		return
+	}
+	gallery.Title = r.FormValue("title")
+	err = g.GalleryService.Update(gallery)
+	if err != nil {
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, fmt.Sprintf("/galleries/%d/edit", gallery.ID), http.StatusFound)
+}
+
+func (g Galleries) Index(w http.ResponseWriter, r *http.Request) {
+	type Gallery struct {
+		ID    int
+		Title string
+	}
+	var data struct {
+		Galleries []Gallery
+	}
+	user := context.User(r.Context())
+	galleries, err := g.GalleryService.ByUserID(user.ID)
+	if err != nil{
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		return
+	}
+	for _, gallery := range galleries {
+		data.Galleries = append(data.Galleries, Gallery{
+			ID: gallery.ID,
+			Title: gallery.Title,
+		})
+	}
+	g.Templates.Index.Execute(w, r, data)
 }

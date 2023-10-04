@@ -13,17 +13,24 @@
     <header class="bg-indigo-600">
         <nav class="px-8 py-6 flex items-center text-white">
             <div class="pr-12 text-4xl" href="/">📸</div>
-            <div class="flex-grow" >
+            <div class="" >
                 <a class="text-lg font-semibold hover:text-blue-300 pr-8"href="/">Home</a>
                 <a class="text-lg font-semibold hover:text-blue-300 pr-8"href="/contact">Contact</a>
             </div>
+            {{if currentUser}}
+                <div class="flex-grow flex flex-row-reverse">
+                    <a href="/galleries" class="text-lg font-semibold hover:text-blue-100 pr-8">My Galleries</a>
+                </div>
+            {{else}}
+                <div class="flex-grow"></div>
+            {{end}}
             <div>
                 {{if currentUser}}
                 <form action="/signout" method="post" class="inline pr-4">
                     <div class="hidden">
                         {{csrfField}}
                     </div>
-                    <button type="submit">
+                    <button type="submit" class="hover:text-red-100">
                         Sign Out
                     </button>
                 </form>
