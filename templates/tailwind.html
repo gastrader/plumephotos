@@ -35,13 +35,36 @@
         </nav>
 
     </header>
+    {{if errors}}
+        <div>
+            {{range errors}}
+                <div class="flex justify-center items-center pt-2 closeable">
+                    <div class="flex bg-red-100 rounded px-2 py-2 text-red-800 gap-10">
+                        <div class="flex-grow">
+                            {{.}}
+                        </div>
+                        <a href="#" class="text-red-600 hover:text-red-900" onclick="closeAlert(event)">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                class="lucide lucide-x ">
+                                <path d="M18 6 6 18" />
+                                <path d="m6 6 12 12" />
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            {{end}}
+        </div>
+    {{end}}
     {{end}}
     
     {{define "footer"}}
+<script>
+    function closeAlert(event){
+        let closeable = event.target.closest(".closeable");
+        closeable.remove();
+        }
+</script>
 </body>
-
-
-
-
 </html>
 {{end}}

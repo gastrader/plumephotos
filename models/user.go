@@ -2,9 +2,12 @@ package models
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
 
+	"github.com/jackc/pgconn"
+	"github.com/jackc/pgerrcode"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -35,6 +38,12 @@ func (us *UserService) Create(email, password string) (*User, error) {
 		VALUES ($1, $2) RETURNING id`, email, passwordHash)
 	err = row.Scan(&user.ID)
 	if err != nil {
+		var pgError *pgconn.PgError
+		if errors.As(err, &pgError){
+			if pgError.Code == pgerrcode.UniqueViolation {
+				return nil, ErrEmailTaken
+			}
+		}
 		return nil, fmt.Errorf("create user: %w", err)
 	}
 	return &user, nil
@@ -66,7 +75,7 @@ func (us *UserService) UpdatePassword(userID int, password string) error{
 	passwordHash := string(hashedBytes)
 	_, err = us.DB.Exec(`
 		UPDATE users
-		SET pasword_hash = $2
+		SET password_hash = $2
 		WHERE id = $1;`, userID, passwordHash)
 	if err != nil{
 		return fmt.Errorf("update password.: %w", err)

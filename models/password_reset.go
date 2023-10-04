@@ -25,20 +25,20 @@ type PasswordReset struct {
 }
 
 type PasswordResetService struct {
-	DB *sql.DB
+	DB            *sql.DB
 	BytesPerToken int
-	Duration time.Duration
+	Duration      time.Duration
 }
 
-func (pws *PasswordResetService) Create(email string) (*PasswordReset, error){
+func (pws *PasswordResetService) Create(email string) (*PasswordReset, error) {
 	//Verify we have valid email address, get their ID
 	email = strings.ToLower(email)
 	var userID int
 	row := pws.DB.QueryRow(`
 		SELECT id FROM users WHERE email = $1;`, email)
 	err := row.Scan(&userID)
-	if err != nil{
-		return nil, fmt.Errorf("create: %w" , err)
+	if err != nil {
+		return nil, fmt.Errorf("create: %w", err)
 	}
 	//Build the password reset
 	bytesPerToken := pws.BytesPerToken
@@ -55,8 +55,8 @@ func (pws *PasswordResetService) Create(email string) (*PasswordReset, error){
 		duration = DefaultResetDuration
 	}
 	pwReset := PasswordReset{
-		UserID: userID,
-		Token: token,
+		UserID:    userID,
+		Token:     token,
 		TokenHash: pws.hash(token),
 		ExpiresAt: time.Now().Add(duration),
 	}
@@ -71,11 +71,45 @@ func (pws *PasswordResetService) Create(email string) (*PasswordReset, error){
 	return &pwReset, nil
 }
 
-func (pws *PasswordResetService) Consume(token string) (*User, error){
-	return nil, nil 
+func (pws *PasswordResetService) Consume(token string) (*User, error) {
+	//verify pw reset is not expired
+	tokenHash := pws.hash(token)
+	fmt.Println("The token is: ", tokenHash)
+	var user User
+	var pwReset PasswordReset
+	row := pws.DB.QueryRow(`
+		SELECT password_resets.id, 
+		password_resets.expires_at, 
+		users.id, users.email, users.password_hash 
+		FROM password_resets 
+		JOIN users ON users.id = password_resets.user_id
+		WHERE password_resets.token_hash = $1;`, tokenHash)
+	err := row.Scan(&pwReset.ID, &pwReset.ExpiresAt,
+		&user.ID, &user.Email, &user.PasswordHash)
+	if err != nil {
+		return nil, fmt.Errorf("consumee: %w", err)
+	}
+	if time.Now().After(pwReset.ExpiresAt) {
+		return nil, fmt.Errorf("token expired: %v", token)
+	}
+	//delete pw reset.
+	err = pws.delete(pwReset.ID)
+	if err != nil {
+		return nil, fmt.Errorf("consume: %w", err)
+	}
+	return &user, nil
 }
 
 func (pws *PasswordResetService) hash(token string) string {
 	tokenHash := sha256.Sum256([]byte(token))
 	return base64.URLEncoding.EncodeToString(tokenHash[:])
+}
+
+func (pws *PasswordResetService) delete(id int) error {
+	_, err := pws.DB.Exec(`
+	DELETE FROM password_resets WHERE id = $1;`, id)
+	if err != nil {
+		return fmt.Errorf("delete: %w", err)
+	}
+	return nil
 }
