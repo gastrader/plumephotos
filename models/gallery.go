@@ -107,6 +107,10 @@ func (gs *GalleryService) Delete(id int) error {
 	if err != nil {
 		return fmt.Errorf("delete gallery.: %w", err)
 	}
+	err = os.RemoveAll(gs.galleryDir(id))
+	if err != nil{
+		return fmt.Errorf("delete gallery images: %w", err)
+	}
 	return nil
 }
 
@@ -165,23 +169,35 @@ func (gs *GalleryService) Image(galleryID int, filename string) (Image, error) {
 }
 
 func (gs *GalleryService) extensions() []string {
-	return []string{".png", ".jpg", ".jpeg", ".gif", ".webp"}
+	return []string{".png", ".jpg", ".jpeg", ".gif"}
 }
 
-func (gs *GalleryService) CreateImage(galleryID int, filename string, contents io.Reader) error {
+func (gs *GalleryService) imageContentTypes() []string {
+	return []string{"image/png", "image/gif", "image/jpeg", "image/jpg"}
+}
+func (gs *GalleryService) CreateImage(galleryID int, filename string, contents io.ReadSeeker) error {
+	err := checkContentType(contents, gs.imageContentTypes())
+	if err != nil {
+		return fmt.Errorf("creating image: %w", err)
+	}
+	err = checkExtension(filename, gs.extensions())
+	if err != nil {
+		return fmt.Errorf("creating image: %w", err)
+	}
+
 	galleryDir := gs.galleryDir(galleryID)
-	err := os.MkdirAll(galleryDir, 0755)
+	err = os.MkdirAll(galleryDir, 0755)
 	if err != nil {
 		return fmt.Errorf("creating gallery image directory: %w", err)
 	}
 	imagePath := filepath.Join(galleryDir, filename)
 	dst, err := os.Create(imagePath)
-	if err != nil{
+	if err != nil {
 		return fmt.Errorf("creating image file: %w", err)
 	}
 	defer dst.Close()
 	_, err = io.Copy(dst, contents)
-	if err != nil{
+	if err != nil {
 		return fmt.Errorf("copying contents to image: %w", err)
 	}
 	return nil
