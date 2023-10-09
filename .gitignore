@@ -1,3 +1,5 @@
 .env
 images/
 .exe
+
+node_modules/

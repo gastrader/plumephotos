@@ -1,6 +1,8 @@
 # PHOTOSHARING WEBSITE
 
-docker compose up/down
+docker compose down --remove-orphans
+
+docker compose -f docker-compose.yml -f docker-compose.production.yml up
 
 goose create 'name' sql
 
@@ -30,3 +32,6 @@ DELETE FROM users WHERE id=1;
 
 ```alter existing table```
 ALTER TABLE sessions ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id);
+
+```droplet```
+ssh -i ./c/Users/______/.ssh/id_rsa root@____
