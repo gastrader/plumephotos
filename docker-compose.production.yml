@@ -20,7 +20,7 @@ services:
     ports: 
      - 3001:3001
     depends_on:
-      - d
+      - db
     logging: *highlight-logging
   
   caddy:
