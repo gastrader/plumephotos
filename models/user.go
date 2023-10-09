@@ -57,11 +57,11 @@ func (us *UserService) Authenticate(email, password string) (*User, error){
 	row := us.DB.QueryRow(`SELECT id, password_hash FROM users WHERE email=$1`, email)
 	err := row.Scan(&user.ID, &user.PasswordHash)
 	if err != nil{
-		return nil, fmt.Errorf("authenticate: %w", err)
+		return nil, fmt.Errorf("authenticate: %w", ErrEmailNotFound)
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.PasswordHash), []byte(password))
 	if err != nil {
-		return nil, fmt.Errorf("authenticate: %w", err)
+		return nil, fmt.Errorf("authenticate: %w", ErrLoginNotFound)
 	}
 	return &user, nil
 }

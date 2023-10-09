@@ -43,9 +43,9 @@
 
     </header>
     {{if errors}}
-        <div>
+        <div class="fixed top-20 left-1/2 transform -translate-x-1/2 bg-red-100 rounded p-2 text-red-800 z-50 closeable">
             {{range errors}}
-                <div class="flex justify-center items-center pt-2 closeable">
+                <div class="flex justify-between items-center">
                     <div class="flex bg-red-100 rounded px-2 py-2 text-red-800 gap-10">
                         <div class="flex-grow">
                             {{.}}

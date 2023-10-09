@@ -11,6 +11,8 @@ import (
 var (
 	ErrEmailTaken = errors.New("models: Email address is already in use")
 	ErrNotFound   = errors.New("models: Resource not found")
+	ErrLoginNotFound = errors.New("accounts: Email and Password do not match")
+	ErrEmailNotFound = errors.New("accounts: Email not found")
 )
 
 type FileError struct {

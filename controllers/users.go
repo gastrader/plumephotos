@@ -82,8 +82,19 @@ func (u Users) ProcessSignIn(w http.ResponseWriter, r *http.Request) {
 	data.Password = r.FormValue("password")
 	user, err := u.UserService.Authenticate(data.Email, data.Password)
 	if err != nil {
+		if errors.Is(err, models.ErrLoginNotFound){
+			err = errors.Public(err, "The email address and password do not match.")
+			u.Templates.SignIn.Execute(w, r, data, err)
+			return
+		}
+		if errors.Is(err, models.ErrEmailNotFound){
+			err = errors.Public(err, "The email address was not found.")
+			u.Templates.SignIn.Execute(w, r, data, err)
+			return
+		}
 		fmt.Println(err)
 		http.Error(w, "Login did not work .", http.StatusInternalServerError)
+
 		return
 	}
 	session, err := u.SessionService.Create(user.ID)
