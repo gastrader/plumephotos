@@ -35,3 +35,6 @@ ALTER TABLE sessions ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) 
 
 ```droplet```
 ssh -i ./c/Users/______/.ssh/id_rsa root@____
+
+```docker compose```
+docker compose -f docker-compose.yml -f docker-compose.production.yml logs
