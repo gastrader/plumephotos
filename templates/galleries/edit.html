@@ -38,43 +38,43 @@
         </div>
         <div class="py-4">
             <h2 class="pb-4 font-semibold text-gray-200">Current Files</h2>
-<table class="min-w-full bg-[#434242]">
-    <thead class="bg-[#434242]">
-        <tr>
-            <th
-                class="px-2 py-3 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
-                #</th>
-            <th
-                class="px-6 py-3 bg-gray-200 text-clip truncate text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
-                Filename</th>
-            <th
-                class="px-6 py-3 bg-gray-200 text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
-                Actions</th>
-        </tr>
-    </thead>
-    <tbody class="bg-[#434242]">
-        {{ range $index, $image := .Images }}
-        <tr class="bg-[#434242]">
-            <td class="px-2 py-4 whitespace-no-wrap border-b border-black bg-[#434242] text-white text-center">{{ add $index 1 }}
-            </td>
-            <td class="px-6 py-4 text-clip truncate border-b border-black bg-[#434242] text-white max-w-[200px] md:max-w-none">
-                <a href="/galleries/{{ $image.GalleryID }}/images/{{ $image.FilenameEscaped }}" class="text-blue-500 hover:underline" target="_blank">
-                    {{ $image.Filename }}
-                </a>
-                
-            </td>
-            <td class="px-6 py-4 whitespace-no-wrap border-b border-black bg-[#434242] flex gap-4">
-                <div class="p-1 bg-[#434242]">
-                    <button onclick="copyToClipboard(this, '/galleries/{{ $image.GalleryID }}/images/{{ $image.FilenameEscaped }}')"
-                        class="py-1 bg-green-100 hover:bg-green-200 rounded border border-green-600 text-sm text-black font-semibold flex items-center w-20 align-middle justify-center">Share
-                    </button>
-                </div>
-                {{template "delete_image_form" $image}}
-            </td>
-        </tr>
-        {{ end }}
-    </tbody>
-</table>
+            <table class="min-w-full bg-[#434242]">
+                <thead class="bg-[#434242]">
+                    <tr>
+                        <th
+                            class="px-2 py-3 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                            #</th>
+                        <th
+                            class="px-6 py-3 bg-gray-200 text-clip truncate text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                            Filename</th>
+                        <th
+                            class="px-6 py-3 bg-gray-200 text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                            Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-[#434242]">
+                    {{ range $index, $image := .Images }}
+                    <tr class="bg-[#434242]">
+                        <td class="px-2 py-4 whitespace-no-wrap border-b border-black bg-[#434242] text-white text-center">{{ add $index 1 }}
+                        </td>
+                        <td class="px-6 py-4 text-clip truncate border-b border-black bg-[#434242] text-white max-w-[200px] md:max-w-none">
+                            <a href="/galleries/{{ $image.GalleryID }}/images/{{ $image.FilenameEscaped }}" class="text-blue-500 hover:underline" target="_blank">
+                                {{ $image.Filename }}
+                            </a>
+                            
+                        </td>
+                        <td class="px-6 py-4 border-b border-black bg-[#434242] flex gap-4">
+                            <div class="p-1 bg-[#434242]">
+                                <button onclick="copyToClipboard(this, '/galleries/{{ $image.GalleryID }}/images/{{ $image.FilenameEscaped }}')"
+                                    class="py-1 bg-green-100 hover:bg-green-200 rounded border border-green-600 text-sm text-black font-semibold flex items-center w-20 align-middle justify-center">Share
+                                </button>
+                            </div>
+                            {{template "delete_image_form" $image}}
+                        </td>
+                    </tr>
+                    {{ end }}
+                </tbody>
+            </table>
         </div>
         <div class="py-4">
             <h2 class="font-semibold pb-2 text-gray-200">Dangerous Actions</h2>
