@@ -35,7 +35,7 @@
                     </div>
                     <div>
                         <button onclick="copyToClipboard(this, '/galleries/{{ .ID }}')"
-                            class="py-1 px-2 bg-green-100 hover:bg-green-200 rounded border border-green-600 text-sm text-black font-semibold w-32">Share
+                            class="py-1 px-2 bg-green-100 hover:bg-green-200 rounded border border-green-600 text-sm text-black font-semibold md:w-32 w-20">Share
                             URL</button>
                     </div>
                 </td>
@@ -43,7 +43,7 @@
             {{ end }}
         </tbody>
     </table>
-    <div class="pt-8">
+    <div class="py-6">
         <a href="/galleries/new" class="py-2 px-8 bg-indigo-600 hover:text-[#eeeeeeb9] font-bold rounded text-lg bg-gradient-to-r from-[#6477e6] bg-opacity-50 to-[#2f94d8] text-white">
             New Gallery
         </a>
