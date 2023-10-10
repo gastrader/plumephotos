@@ -78,9 +78,7 @@ func (g Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 			FilenameEscaped: url.PathEscape(image.Filename),
 		})
 	}
-
 	g.Templates.Edit.Execute(w, r, data)
-
 }
 
 func (g Galleries) Update(w http.ResponseWriter, r *http.Request) {

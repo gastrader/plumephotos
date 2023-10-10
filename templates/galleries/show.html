@@ -3,10 +3,9 @@
     <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-200">
         Viewing: {{.Title}}
     </h1>
-    <div class="columns-4 gap-4 space-y-4">
+    <div class="columns-2 md:columns-4 gap-4 space-y-4">
         {{range .Images}}
         <div class="h-min w-full relative group">
-           
                 <a href="/galleries/{{.GalleryID}}/images/{{.FilenameEscaped}}" target="_blank">
                     <img class="w-full" src="/galleries/{{.GalleryID}}/images/{{.FilenameEscaped}}"/>
                     <div class="bg-black text-white py-2 text-center opacity-0 group-hover:opacity-75 transition duration-300 z-10 absolute bottom-0 left-0 w-full">

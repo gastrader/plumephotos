@@ -25,7 +25,7 @@
         </div>
         <div class="py-4">
             <h2 class="pb-4 font-semibold text-gray-200">Current Images</h2>
-            <div class="py-2 grid grid-cols-8 gap-2">
+            <div class="py-2 grid grid-cols-4 md:grid-cols-8 gap-2">
                 {{range .Images}}
                     <div class="h-min w-full relative">
                         <div class="absolute top-2 right-2">
@@ -35,6 +35,46 @@
                     </div>
                 {{end}}
             </div>
+        </div>
+        <div class="py-4">
+            <h2 class="pb-4 font-semibold text-gray-200">Current Files</h2>
+<table class="min-w-full bg-[#434242]">
+    <thead class="bg-[#434242]">
+        <tr>
+            <th
+                class="px-2 py-3 bg-gray-200 text-center text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                #</th>
+            <th
+                class="px-6 py-3 bg-gray-200 text-clip truncate text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                Filename</th>
+            <th
+                class="px-6 py-3 bg-gray-200 text-left text-xs leading-4 font-medium text-gray-700 uppercase tracking-wider">
+                Actions</th>
+        </tr>
+    </thead>
+    <tbody class="bg-[#434242]">
+        {{ range $index, $image := .Images }}
+        <tr class="bg-[#434242]">
+            <td class="px-2 py-4 whitespace-no-wrap border-b border-black bg-[#434242] text-white text-center">{{ add $index 1 }}
+            </td>
+            <td class="px-6 py-4 text-clip truncate border-b border-black bg-[#434242] text-white max-w-[200px] md:max-w-none">
+                <a href="/galleries/{{ $image.GalleryID }}/images/{{ $image.FilenameEscaped }}" class="text-blue-500 hover:underline" target="_blank">
+                    {{ $image.Filename }}
+                </a>
+                
+            </td>
+            <td class="px-6 py-4 whitespace-no-wrap border-b border-black bg-[#434242] flex gap-4">
+                <div class="p-1 bg-[#434242]">
+                    <button onclick="copyToClipboard(this, '/galleries/{{ $image.GalleryID }}/images/{{ $image.FilenameEscaped }}')"
+                        class="py-1 bg-green-100 hover:bg-green-200 rounded border border-green-600 text-sm text-black font-semibold flex items-center w-20 align-middle justify-center">Share
+                    </button>
+                </div>
+                {{template "delete_image_form" $image}}
+            </td>
+        </tr>
+        {{ end }}
+    </tbody>
+</table>
         </div>
         <div class="py-4">
             <h2 class="font-semibold pb-2 text-gray-200">Dangerous Actions</h2>
@@ -77,14 +117,23 @@
         <p class="pb-4 text-xs text-gray-100 font-normal">Please only upload jpg, png and gif files.</p>
         <input type="file" name="images" multiple accept="image/png, image/jpg, image/gif, image/jpeg" id="images" class="cursor-pointer text-white"/>
     </div>
-    <button type="submit" class="flex py-2 px-8 bg-green-600 hover:bg-green-800 text-white text-lg font-bold rounded gap-2 items-center">Upload
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-            stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-plus-circle">
-            <circle cx="12" cy="12" r="10" />
-            <path d="M8 12h8" />
-            <path d="M12 8v8" />
-        </svg>
+    <button type="submit" class="flex py-2 px-8 bg-green-600 hover:bg-green-800 text-white text-lg font-bold rounded gap-2 items-center pl-6">Upload
     </button>
 </form>
 
 {{end}}
+
+<script>
+    function copyToClipboard(button, text) {
+        const input = document.createElement('input');
+        input.value = window.location.origin + text;
+        document.body.appendChild(input);
+        input.select();
+        document.execCommand('copy');
+        document.body.removeChild(input);
+        button.textContent = 'Copied!';
+        setTimeout(() => {
+            button.textContent = 'Share';
+        }, 1500);
+    }
+</script>

@@ -44,6 +44,9 @@ func ParseFS(fs fs.FS, patterns ...string) (Template, error) {
 			"errors": func() []string {
 				return nil
 			},
+			"add": func(a, b int) int {
+            return a + b
+        },
 		},
 	)
 	tpl, err := tpl.ParseFS(fs, patterns...)
@@ -75,6 +78,9 @@ func (t Template) Execute(w http.ResponseWriter, r *http.Request, data interface
 		"errors": func() []string {
 			return errMsgs
 		},
+		"add": func(a, b int) int {
+            return a + b
+        },
 	},
 	)
 	w.Header().Add("Content-Type", "text/html")

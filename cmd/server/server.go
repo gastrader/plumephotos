@@ -169,7 +169,6 @@ func run (cfg config) error{
 			r.Post("/{id}/images", galleriesC.UploadImage)
 			r.Post("/{id}/images/{filename}/delete", galleriesC.DeleteImage)
 		})
-
 	})
 	assetsHandler := http.FileServer(http.Dir("assets"))
 	r.Get("/assets/*", http.StripPrefix("/assets", assetsHandler).ServeHTTP)
