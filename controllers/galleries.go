@@ -61,8 +61,10 @@ func (g Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 	var data struct {
 		ID     int
 		Title  string
+		Is_Public bool
 		Images []Image
 	}
+	data.Is_Public = gallery.Is_Public
 	data.ID = gallery.ID
 	data.Title = gallery.Title
 	images, err := g.GalleryService.Images(gallery.ID)
@@ -120,7 +122,7 @@ func (g Galleries) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (g Galleries) Show(w http.ResponseWriter, r *http.Request) {
-	gallery, err := g.galleryByID(w, r)
+	gallery, err := g.galleryByID(w, r, galleryPublic)
 	if err != nil {
 		return
 	}
@@ -133,7 +135,9 @@ func (g Galleries) Show(w http.ResponseWriter, r *http.Request) {
 		ID     int
 		Title  string
 		Images []Image
+		Is_Public bool
 	}
+	
 	data.ID = gallery.ID
 	data.Title = gallery.Title
 	images, err := g.GalleryService.Images(gallery.ID)
@@ -149,6 +153,7 @@ func (g Galleries) Show(w http.ResponseWriter, r *http.Request) {
 			FilenameEscaped: url.PathEscape(image.Filename),
 		})
 	}
+	data.Is_Public = gallery.Is_Public
 	g.Templates.Show.Execute(w, r, data)
 }
 
@@ -172,6 +177,10 @@ func (g Galleries) Image(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid ID", http.StatusNotFound)
 		return
 	}
+	_, err = g.galleryByID(w, r, galleryPublic)
+	if err != nil{
+		return
+	}
 	image, err := g.GalleryService.Image(galleryID, filename)
 	if err != nil {
 		if errors.Is(err, models.ErrNotFound) {
@@ -183,6 +192,25 @@ func (g Galleries) Image(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.ServeFile(w, r, image.Path)
+}
+
+func(g Galleries) UpdatePerms(w http.ResponseWriter, r *http.Request){
+	gallery, err := g.galleryByID(w, r, userMustOwnGallery)
+	if err != nil {
+		return
+	}
+	
+	if r.FormValue("is_public") == "on"{
+		gallery.Is_Public = true
+	} else {
+		gallery.Is_Public = false
+	}
+	err = g.GalleryService.UpdatePerms(gallery)
+	if err != nil {
+		http.Error(w, "Something went wrong", http.StatusInternalServerError)
+		return
+	}
+	http.Redirect(w, r, fmt.Sprintf("/galleries/%d/edit", gallery.ID), http.StatusFound)
 }
 
 func (g Galleries) UploadImage(w http.ResponseWriter, r *http.Request) {
@@ -273,4 +301,13 @@ func userMustOwnGallery(w http.ResponseWriter, r *http.Request, gallery *models.
 		return fmt.Errorf("user does not have access to this gallery")
 	}
 	return nil
+}
+
+func galleryPublic(w http.ResponseWriter, r *http.Request, gallery *models.Gallery) error{
+	user := context.User(r.Context())
+	if gallery.Is_Public || user != nil && gallery.UserID == user.ID {
+        return nil
+    }
+	http.Error(w, "You are not authorized to view this gallery", http.StatusForbidden)
+	return fmt.Errorf("user does not have view to this gallery")
 }
