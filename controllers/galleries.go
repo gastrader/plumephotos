@@ -19,6 +19,7 @@ type Galleries struct {
 		Show  Template
 		Edit  Template
 		Index Template
+		Error Template
 	}
 	GalleryService *models.GalleryService
 }
@@ -59,10 +60,10 @@ func (g Galleries) Edit(w http.ResponseWriter, r *http.Request) {
 		FilenameEscaped string
 	}
 	var data struct {
-		ID     int
-		Title  string
+		ID        int
+		Title     string
 		Is_Public bool
-		Images []Image
+		Images    []Image
 	}
 	data.Is_Public = gallery.Is_Public
 	data.ID = gallery.ID
@@ -122,22 +123,25 @@ func (g Galleries) Index(w http.ResponseWriter, r *http.Request) {
 }
 
 func (g Galleries) Show(w http.ResponseWriter, r *http.Request) {
-	gallery, err := g.galleryByID(w, r, galleryPublic)
-	if err != nil {
-		return
-	}
 	type Image struct {
 		GalleryID       int
 		Filename        string
 		FilenameEscaped string
 	}
 	var data struct {
-		ID     int
-		Title  string
-		Images []Image
+		ID        int
+		Title     string
+		Images    []Image
 		Is_Public bool
 	}
-	
+	gallery, err := g.galleryByID(w, r, galleryPublic)
+	if err != nil {
+		if errors.Is(err, models.ErrNotAuthorized) {
+			err = errors.Public(err, "You are not authorized to view this resource.")
+		}
+		g.Templates.Error.Execute(w, r, data, err)
+		return
+	}
 	data.ID = gallery.ID
 	data.Title = gallery.Title
 	images, err := g.GalleryService.Images(gallery.ID)
@@ -171,6 +175,7 @@ func (g Galleries) Delete(w http.ResponseWriter, r *http.Request) {
 }
 
 func (g Galleries) Image(w http.ResponseWriter, r *http.Request) {
+	var data struct{}
 	filename := g.filename(w, r)
 	galleryID, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
@@ -178,7 +183,12 @@ func (g Galleries) Image(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	_, err = g.galleryByID(w, r, galleryPublic)
-	if err != nil{
+	if err != nil {
+		if errors.Is(err, models.ErrNotAuthorized) {
+			err = errors.Public(err, "You are not authorized to view this resource.")
+		}
+		g.Templates.Error.Execute(w, r, data, err)
+		
 		return
 	}
 	image, err := g.GalleryService.Image(galleryID, filename)
@@ -194,13 +204,13 @@ func (g Galleries) Image(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, image.Path)
 }
 
-func(g Galleries) UpdatePerms(w http.ResponseWriter, r *http.Request){
+func (g Galleries) UpdatePerms(w http.ResponseWriter, r *http.Request) {
 	gallery, err := g.galleryByID(w, r, userMustOwnGallery)
 	if err != nil {
 		return
 	}
-	
-	if r.FormValue("is_public") == "on"{
+
+	if r.FormValue("is_public") == "on" {
 		gallery.Is_Public = true
 	} else {
 		gallery.Is_Public = false
@@ -234,7 +244,7 @@ func (g Galleries) UploadImage(w http.ResponseWriter, r *http.Request) {
 		err = g.GalleryService.CreateImage(gallery.ID, fileHeader.Filename, file)
 		if err != nil {
 			var fileErr models.FileError
-			if errors.As(err, &fileErr){
+			if errors.As(err, &fileErr) {
 				msg := fmt.Sprintf("%v has an invalid content type. Only png, gif and jpg can be uploaded.", fileHeader.Filename)
 				http.Error(w, msg, http.StatusBadRequest)
 				return
@@ -298,16 +308,16 @@ func userMustOwnGallery(w http.ResponseWriter, r *http.Request, gallery *models.
 	user := context.User(r.Context())
 	if gallery.UserID != user.ID {
 		http.Error(w, "You are not authorized to edit this gallery", http.StatusForbidden)
-		return fmt.Errorf("user does not have access to this gallery")
+		return models.ErrNotAuthorized
 	}
 	return nil
 }
 
-func galleryPublic(w http.ResponseWriter, r *http.Request, gallery *models.Gallery) error{
+func galleryPublic(w http.ResponseWriter, r *http.Request, gallery *models.Gallery) error {
 	user := context.User(r.Context())
 	if gallery.Is_Public || user != nil && gallery.UserID == user.ID {
-        return nil
-    }
-	http.Error(w, "You are not authorized to view this gallery", http.StatusForbidden)
-	return fmt.Errorf("user does not have view to this gallery")
+		return nil
+	}
+	// http.Error(w, "You are not authorized to view this gallery", http.StatusForbidden)
+	return models.ErrNotAuthorized
 }

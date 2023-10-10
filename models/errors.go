@@ -13,6 +13,7 @@ var (
 	ErrNotFound   = errors.New("models: Resource not found")
 	ErrLoginNotFound = errors.New("accounts: Email and Password do not match")
 	ErrEmailNotFound = errors.New("accounts: Email not found")
+	ErrNotAuthorized = errors.New("permissions: Account not authorized to view this resource")
 )
 
 type FileError struct {

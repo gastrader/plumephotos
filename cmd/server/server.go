@@ -130,6 +130,7 @@ func run (cfg config) error{
 	galleriesC.Templates.Edit = views.Must(views.ParseFS(templates.FS, "galleries/edit.html", "tailwind.html"))
 	galleriesC.Templates.Index = views.Must(views.ParseFS(templates.FS, "galleries/index.html", "tailwind.html"))
 	galleriesC.Templates.Show = views.Must(views.ParseFS(templates.FS, "galleries/show.html", "tailwind.html"))
+	galleriesC.Templates.Error = views.Must(views.ParseFS(templates.FS, "galleries/errors.html", "tailwind.html"))
 	//setup router and routes
 	r := chi.NewRouter()
 	r.Use(csrfMw)
