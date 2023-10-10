@@ -1,15 +1,17 @@
 {{template "header" .}}
-<div class="px-4 text-center w-full items-center flex flex-col lg:flex-row h-screen pb-24">
-    <div class="w-7xl pb-8">
-        <h1 class="mb-4 text-4xl font-extrabold tracking-tight leading-none text-gray-900 md:text-5xl lg:text-6xl">
-            Plume Pics
+<div class="w-full py-8 px-10 pt-32 ">
+    <div class="flex flex-col justify-center items-center space-y-8 ">
+        <a href="/signup" class="rounded-full px-12 py-2 bg-gradient-to-r from-[#262626] bg-opacity-50 to-[#404040] text-white text-lg hover:shadow-sm hover:shadow-[#adadad]">
+            Join our growing community 🎉
+        </a>
+        <h1 class="max-w-6xl text-white mx-auto text-6xl font-bold text-center tracking-tight">
+            Discover the joy of capturing, sharing, and cherishing
+            <span class="underline decoration-sky-500">memories.</span>
         </h1>
-        <p class="mb-8 text-lg font-normal text-gray-500 lg:text-xl px-10">
-            Discover the joy of capturing, sharing, and cherishing memories with our intuitive photo gallery platform. Upload
-            your precious moments with just a click. Whether it's family gatherings, vacations, or everyday adventures.
+        <p class="text-lg text-white max-w-2xl text-center tracking-tight">
+            Upload your precious moments with just a click. Whether it's family gatherings, vacations, or everyday adventures.
         </p>
-        <a href="/signup"
-            class="inline-flex justify-center items-center py-3 px-5 text-base font-medium text-center text-white rounded-lg bg-indigo-600 hover:bg-indigo-700 focus:ring-4 focus:ring-indigo-300 dark:focus:ring-indigo-900">
+        <a href="/signup" class="hover:text-[#eeeeeeb9] flex rounded-full py-4 px-10 bg-gradient-to-r from-[#6477e6] bg-opacity-50 to-[#2f94d8] text-white font-medium">
             Get Started
             <svg class="ml-2 -mr-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                 <path fill-rule="evenodd"
@@ -17,7 +19,11 @@
                     clip-rule="evenodd"></path>
             </svg>
         </a>
+        <div class="border rounded mt-20 p-1">
+            <img src="/assets/hero2.png" class="w-full h-full object-cover"/>
+        </div>
     </div>
-    <img class="mb-8 rounded-full h-fit" src="/assets/hero.png" />
+
 </div>
+
 {{template "footer" .}}

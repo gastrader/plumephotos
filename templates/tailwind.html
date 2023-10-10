@@ -6,17 +6,17 @@
     <meta charset="UTF-8" /> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="/assets/styles.css" />
+    <link rel="icon" type="image/x-icon" href="/assets/icon3.ico">
+    
  <!-- ... -->
 </head>
 
-<body class="min-h-screen bg-gray-100">
-    <header class="bg-indigo-600">
-        <nav class="px-8 py-6 flex items-center text-white">
-            <a class="pr-12 text-4xl" href="/">📸</a>
-            <div class="" >
-                <a class="text-lg font-semibold hover:text-blue-300 pr-8"href="/">Home</a>
-                <a class="text-lg font-semibold hover:text-blue-300 pr-8"href="/contact">Contact Us</a>
-            </div>
+<body class="min-h-screen bg-[#1B1B1B]">
+    <header class="bg-[#1B1B1B] border-b border-gray-500">
+        <nav class="px-8 py-2 flex items-center text-white">
+            <a href="/">
+                <img class="max-w-[160px]" src="/assets/logo.png" />
+            </a>
             {{if currentUser}}
                 <div class="flex-grow flex flex-row-reverse">
                     <a href="/galleries" class="text-lg font-semibold hover:text-blue-100 pr-8">My Galleries</a>
@@ -35,8 +35,10 @@
                     </button>
                 </form>
                 {{else}}
-                <a class="pr-4" href="signin">Sign In</a>
-                <a class="px-4 py-2 bg-blue-700 hover:bg-blue-600 rounded" href="/signup">Sign Up</a>
+                <div class="space-x-2">
+                    <a class="rounded-full px-4 py-2 hover:text-[#adadad]" href="/signin">Sign In</a>
+                    <a class="px-10 py-2 rounded-full bg-[#444444] hover:bg-[#323131]" href="/signup">Sign Up</a>
+                </div>
                 {{end}}
             </div>
         </nav>
@@ -63,7 +65,7 @@
             {{end}}
         </div>
     {{end}}
-    {{end}}
+{{end}}
     
     {{define "footer"}}
 <script>
@@ -72,6 +74,18 @@
         closeable.remove();
         }
 </script>
+<div class="fixed bottom-2 left-1/2 transform -translate-x-1/2 text-center">
+    <a class="flex flex-col sm:flex-row text-gray-200 items-center space-x-2" href="https://www.plumega.com"
+        target="_blank">
+        <span>Crafted with </span>
+        <span class="flex">
+            ❤️ and &nbsp;
+            <img src="/assets/gopher.png" class="h-6" />
+        </span>
+        
+        <span>by GT</span>
+    </a>
+</div>
 </body>
 </html>
 {{end}}

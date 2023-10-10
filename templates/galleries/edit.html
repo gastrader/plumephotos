@@ -1,6 +1,6 @@
 {{template "header" .}}
 <div class="p-8 w-full ">
-    <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-800">
+    <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-200">
         Edit Gallery: {{.Title}}
     </h1>
         <form action="/galleries/{{.ID}}" method="post">
@@ -8,14 +8,14 @@
                 {{csrfField}}
             </div>
             <div class="py-2 flex flex-col ">
-                <label for="title" class="font-semibold text-gray-800 pb-2">Title</label>
+                <label for="title" class="font-semibold text-gray-200 pb-2">Title</label>
                 <input name="title" id="title" type="text" placeholder="Enter the name of your gallery" required
-                    class="w-1/2 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded" value="{{.Title}}"
+                    class="w-1/2 px-3 py-2 border border-gray-300 placeholder-gray-500 text-white rounded bg-[#333333]" value="{{.Title}}"
                     autofocus />
             </div>
         
             <div class="py-4">
-                <button type="submit" class="py-2 px-8 bg-indigo-600 hover:bg-indigo-700 font-bold rounded text-lg text-white">
+                <button type="submit" class="py-2 px-8 bg-indigo-600 hover:text-[#eeeeeeb9] font-bold rounded text-lg bg-gradient-to-r from-[#6477e6] bg-opacity-50 to-[#2f94d8] text-white">
                     Update the Gallery Name
                 </button>
             </div>
@@ -24,7 +24,7 @@
             {{template "upload_image_form" .}}
         </div>
         <div class="py-4">
-            <h2 class="pb-4 font-semibold text-gray-800">Current Images</h2>
+            <h2 class="pb-4 font-semibold text-gray-200">Current Images</h2>
             <div class="py-2 grid grid-cols-8 gap-2">
                 {{range .Images}}
                     <div class="h-min w-full relative">
@@ -37,7 +37,7 @@
             </div>
         </div>
         <div class="py-4">
-            <h2 class="font-semibold pb-2 text-gray-800">Dangerous Actions</h2>
+            <h2 class="font-semibold pb-2 text-gray-200">Dangerous Actions</h2>
             <form action="/galleries/{{.ID}}/delete" method="post" onsubmit="return confirm('Do you really want to delete this gallery?');">
                 <div class="hidden">
                     {{csrfField}}
@@ -73,9 +73,9 @@
 <form action="/galleries/{{.ID}}/images" method="post" enctype="multipart/form-data">
     {{csrfField}}
     <div class="pt-4 pb-6">
-        <label for="images" class="block font-semibold text-gray-800">Add Images</label>
-        <p class="pb-4 text-xs text-gray-600 font-normal">Please only upload jpg, png and gif files.</p>
-        <input type="file" name="images" multiple accept="image/png, image/jpg, image/gif, image/jpeg" id="images"/>
+        <label for="images" class="block font-semibold text-gray-200">Add Images</label>
+        <p class="pb-4 text-xs text-gray-100 font-normal">Please only upload jpg, png and gif files.</p>
+        <input type="file" name="images" multiple accept="image/png, image/jpg, image/gif, image/jpeg" id="images" class="cursor-pointer text-white"/>
     </div>
     <button type="submit" class="flex py-2 px-8 bg-green-600 hover:bg-green-800 text-white text-lg font-bold rounded gap-2 items-center">Upload
         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"

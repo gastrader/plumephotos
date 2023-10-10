@@ -1,40 +1,40 @@
 {{template "header" .}}
 <div class="p-8 w-full ">
-    <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-800">
+    <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-200">
         My Galleries
     </h1>
     <table class="w-full table-fixed">
         <thead>
             <tr>
-                <th class="p-2 text-left w-24">ID</th>
-                <th class="p-2 text-left">Title </th>
-                <th class="p-2 text-left w-96">Actions</th>
+                <th class="p-2 text-left md:-24 w-14 text-white">ID</th>
+                <th class="p-2 text-left text-white">Title </th>
+                <th class="p-2 text-left md:w-96 w-60 text-white">Actions</th>
   
             </tr>
         </thead>
         <tbody>
             {{range .Galleries}}
-                <tr class="border">
-                    <td class="p-2">
+                <tr class="border text-white bg-[#434242]">
+                    <td class="p-2 bg-[#434242]">
                         {{.ID}}
                     </td>
-                    <td class="p-2">
+                    <td class="p-2 bg-[#434242]">
                         {{.Title}}
                     </td>
-                    <td class="p-2 flex space-x-2">
-                        <a href="/galleries/{{.ID}}" class="py-1 px-2 bg-blue-100 hover:bg-blue-200 rounded border border-blue-600 text-xs text-grey-800 font-semibold">View</a>
-                        <a href="/galleries/{{.ID}}/edit" class="py-1 px-2 bg-yellow-100 hover:bg-yellow-200 rounded border border-yellow-600 text-xs text-grey-800 font-semibold">Edit</a>
+                    <td class="p-2 flex space-x-2 bg-[#434242]">
+                        <a href="/galleries/{{.ID}}" class="py-1 px-2 bg-blue-100 hover:bg-blue-200 rounded border border-blue-600 text-sm text-black font-semibold">View</a>
+                        <a href="/galleries/{{.ID}}/edit" class="py-1 px-2 bg-yellow-100 hover:bg-yellow-200 rounded border border-yellow-600 text-sm text-black font-semibold">Edit</a>
                         <form action="/galleries/{{.ID}}/delete" method="post" onsubmit="return confirm('Do you really want to delete this gallery?');">
                             {{csrfField}}
-                            <button type="submit" href="/galleries/{{.ID}}/delete" class="py-1 px-2 bg-red-100 hover:bg-red-200 rounded border border-red-600 text-xs text-grey-800 font-semibold">Delete</button>
+                            <button type="submit" href="/galleries/{{.ID}}/delete" class="py-1 px-2 bg-red-100 hover:bg-red-200 rounded border border-red-600 text-sm text-black font-semibold">Delete</button>
                         </form>
                     </td>
                 </tr>
             {{end}}
         </tbody>
     </table>
-    <div class="py-4">
-        <a href="/galleries/new" class="py-2 px-8 bg-indigo-600 hover:bg-indigo-700 font-bold rounded text-lg text-white">
+    <div class="pt-8">
+        <a href="/galleries/new" class="py-2 px-8 bg-indigo-600 hover:text-[#eeeeeeb9] font-bold rounded text-lg bg-gradient-to-r from-[#6477e6] bg-opacity-50 to-[#2f94d8] text-white">
             New Gallery
         </a>
     </div>

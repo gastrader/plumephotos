@@ -1,19 +1,19 @@
 {{template "header" .}}
 <div class="p-8 w-full ">
-    <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-800">Create a new Gallery</h1>
+    <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-200">Create a new Gallery</h1>
     <form action="/galleries" method="post">
         <div class="hidden">
             {{csrfField}}
         </div>
         <div class="py-2 flex flex-col ">
-            <label for="title" class="text-sm font-semibold text-gray-800">Title</label>
+            <label for="title" class="text-sm font-semibold text-gray-200 py-1">Title</label>
             <input name="title" id="title" type="text" placeholder="Enter the name of your gallery" required 
-                class="w-1/2 px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-800 rounded"
+                class="w-1/2 px-3 py-2 border border-gray-300 placeholder-gray-500 text-white rounded bg-[#333333]"
                 value="{{.Title}}" autofocus />
         </div>
         
         <div class="py-4">
-            <button type="submit" class="py-2 px-8 bg-indigo-600 hover:bg-indigo-700 font-bold rounded text-lg text-white">
+            <button type="submit" class="py-2 px-8 bg-indigo-600 hover:text-[#eeeeeeb9] font-bold rounded text-lg bg-gradient-to-r from-[#6477e6] bg-opacity-50 to-[#2f94d8] text-white">
                 Create a Gallery
             </button>
         </div>
