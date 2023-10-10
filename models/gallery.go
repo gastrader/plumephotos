@@ -22,6 +22,7 @@ type Gallery struct {
 	ID     int
 	UserID int
 	Title  string
+	Is_Public bool
 }
 
 type GalleryService struct {
@@ -51,10 +52,10 @@ func (gs *GalleryService) ByID(id int) (*Gallery, error) {
 		ID: id,
 	}
 	row := gs.DB.QueryRow(`
-		SELECT title, user_id
+		SELECT title, user_id, is_public
 		FROM galleries
 		WHERE id = $1;`, gallery.ID)
-	err := row.Scan(&gallery.Title, &gallery.UserID)
+	err := row.Scan(&gallery.Title, &gallery.UserID, &gallery.Is_Public)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
@@ -94,6 +95,17 @@ func (gs *GalleryService) Update(gallery *Gallery) error {
 		UPDATE galleries
 		SET title = $2
 		WHERE id = $1;`, gallery.ID, gallery.Title)
+	if err != nil {
+		return fmt.Errorf("update gallery: %w", err)
+	}
+	return nil
+}
+
+func (gs *GalleryService) UpdatePerms(gallery *Gallery) error {
+	_, err := gs.DB.Exec(`
+		UPDATE galleries
+		SET is_public = $2
+		WHERE id = $1;`, gallery.ID, gallery.Is_Public)
 	if err != nil {
 		return fmt.Errorf("update gallery: %w", err)
 	}

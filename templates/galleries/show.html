@@ -1,8 +1,17 @@
 {{template "header" .}}
 <div class="p-8 w-full mb-4">
-    <h1 class="pt-4 pb-8 text-3xl font-bold text-gray-200">
-        Viewing: {{.Title}}
-    </h1>
+    <div class="flex items-center space-x-2 py-8 ">
+        <h1 class="text-3xl font-bold text-gray-200 align-middle">
+            Viewing: {{.Title}}
+        </h1>
+        {{if .Is_Public}}
+        <a class="rounded flex items-center justify-center w-20 h-8 bg-green-400 border text-white font-semibold hover:bg-green-500"
+            href="/galleries/{{.ID}}/edit">Public</a>
+        {{else}}
+        <a class="rounded flex items-center justify-center w-20 h-8 bg-red-400 border text-white font-semibold hover:bg-red-500 " href="/galleries/{{.ID}}/edit">Private</a>
+        {{end}}
+    </div>
+   
     <div class="columns-2 md:columns-4 gap-4 space-y-4">
         {{range .Images}}
         <div class="h-min w-full relative group">
