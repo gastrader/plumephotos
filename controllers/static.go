@@ -19,7 +19,7 @@ func FAQ(tpl Template) http.HandlerFunc {
 		Answer   template.HTML
 	}{
 		{
-			Question: "Is it free? ",
+			Question: "How can I reach you? ",
 			Answer:   "No its not",
 		},
 		{
