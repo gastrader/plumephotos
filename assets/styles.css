@@ -942,6 +942,10 @@ video {
   min-width: 100px;
 }
 
+.min-w-0 {
+  min-width: 0px;
+}
+
 .max-w-\[100\] {
   max-width: 100;
 }
@@ -1002,6 +1006,11 @@ video {
   max-width: 100px;
 }
 
+.max-w-fit {
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
 .flex-1 {
   flex: 1 1 0%;
 }
@@ -1012,6 +1021,10 @@ video {
 
 .flex-shrink-0 {
   flex-shrink: 0;
+}
+
+.flex-shrink {
+  flex-shrink: 1;
 }
 
 .flex-grow {
