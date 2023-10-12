@@ -46,7 +46,6 @@ func loadEnvConfig() (config, error) {
 	if cfg.PSQL.Host == "" && cfg.PSQL.Port == ""{
 		return cfg, fmt.Errorf("no PSQL config provided")
 	}
-	fmt.Println(cfg.PSQL)
 
 	cfg.SMTP.Host = os.Getenv("SMTP_HOST")
 	cfg.SMTP.Username = os.Getenv("SMTP_USERNAME")
