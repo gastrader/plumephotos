@@ -5,18 +5,18 @@
             Viewing: {{.Title}}
         </h1>
         {{if .Is_Public}}
-        <a class="rounded flex items-center justify-center w-20 h-8 bg-green-400 border text-white font-semibold hover:bg-green-500"
-            href="/galleries/{{.ID}}/edit">Public</a>
+        <a class="rounded-full flex items-center justify-center w-20 h-7 bg-green-400 border text-white font-semibold hover:bg-green-500"
+            href="/galleries/{{.UUID}}/edit">Public</a>
         {{else}}
-        <a class="rounded flex items-center justify-center w-20 h-8 bg-red-400 border text-white font-semibold hover:bg-red-500 " href="/galleries/{{.ID}}/edit">Private</a>
+        <a class="rounded-full flex items-center justify-center w-20 h-7 bg-red-400 border text-white font-semibold hover:bg-red-500 " href="/galleries/{{.UUID}}/edit">Private</a>
         {{end}}
     </div>
    
     <div class="columns-2 md:columns-4 gap-4 space-y-4">
         {{range .Images}}
         <div class="h-min w-full relative group">
-                <a href="/galleries/{{.GalleryID}}/images/{{.FilenameEscaped}}" target="_blank">
-                    <img class="w-full" src="/galleries/{{.GalleryID}}/images/{{.FilenameEscaped}}"/>
+                <a href="/galleries/{{.GalleryUUID}}/images/{{.FilenameEscaped}}" target="_blank">
+                    <img class="w-full" src="/galleries/{{.GalleryUUID}}/images/{{.FilenameEscaped}}"/>
                     <div class="bg-black text-white py-2 text-center opacity-0 group-hover:opacity-75 transition duration-300 z-10 absolute bottom-0 left-0 w-full">
                         {{.Filename}}
                     </div>

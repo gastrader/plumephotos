@@ -14,14 +14,15 @@ import (
 
 type Image struct {
 	Path      string
-	GalleryID int
+	GalleryUUID string
 	Filename  string
 }
 
 type Gallery struct {
-	ID     int
-	UserID int
-	Title  string
+	ID        int
+	UUID      string
+	UserID    int
+	Title     string
 	Is_Public bool
 }
 
@@ -47,15 +48,15 @@ func (gs *GalleryService) Create(title string, userID int) (*Gallery, error) {
 	return &gallery, nil
 }
 
-func (gs *GalleryService) ByID(id int) (*Gallery, error) {
+func (gs *GalleryService) ByID(uuid string) (*Gallery, error) {
 	gallery := Gallery{
-		ID: id,
+		UUID: uuid,
 	}
 	row := gs.DB.QueryRow(`
-		SELECT title, user_id, is_public
+		SELECT title, user_id, is_public, id
 		FROM galleries
-		WHERE id = $1;`, gallery.ID)
-	err := row.Scan(&gallery.Title, &gallery.UserID, &gallery.Is_Public)
+		WHERE uuid = $1;`, gallery.UUID)
+	err := row.Scan(&gallery.Title, &gallery.UserID, &gallery.Is_Public, &gallery.ID)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
 			return nil, ErrNotFound
@@ -67,7 +68,7 @@ func (gs *GalleryService) ByID(id int) (*Gallery, error) {
 
 func (gs *GalleryService) ByUserID(userID int) ([]Gallery, error) {
 	rows, err := gs.DB.Query(`
-		SELECT id, title
+		SELECT id, title, uuid
 		FROM galleries
 		WHERE user_id = $1;`, userID)
 	if err != nil {
@@ -78,7 +79,7 @@ func (gs *GalleryService) ByUserID(userID int) ([]Gallery, error) {
 		gallery := Gallery{
 			UserID: userID,
 		}
-		err = rows.Scan(&gallery.ID, &gallery.Title)
+		err = rows.Scan(&gallery.ID, &gallery.Title, &gallery.UUID)
 		if err != nil {
 			return nil, fmt.Errorf("query galleries by user: %w", err)
 		}
@@ -112,30 +113,30 @@ func (gs *GalleryService) UpdatePerms(gallery *Gallery) error {
 	return nil
 }
 
-func (gs *GalleryService) Delete(id int) error {
+func (gs *GalleryService) Delete(uuid string) error {
 	_, err := gs.DB.Exec(`
 		DELETE FROM galleries
-		WHERE id = $1;`, id)
+		WHERE uuid = $1;`, uuid)
 	if err != nil {
 		return fmt.Errorf("delete gallery.: %w", err)
 	}
-	err = os.RemoveAll(gs.galleryDir(id))
-	if err != nil{
+	err = os.RemoveAll(gs.galleryDir(uuid))
+	if err != nil {
 		return fmt.Errorf("delete gallery images: %w", err)
 	}
 	return nil
 }
 
-func (gs *GalleryService) galleryDir(id int) string {
+func (gs *GalleryService) galleryDir(uuid string) string {
 	imagesDir := gs.ImagesDir
 	if imagesDir == "" {
 		imagesDir = "images"
 	}
-	return filepath.Join(imagesDir, fmt.Sprintf("gallery-%d", id))
+	return filepath.Join(imagesDir, fmt.Sprintf("gallery-%s", uuid))
 }
 
-func (gs *GalleryService) Images(galleryID int) ([]Image, error) {
-	globPattern := filepath.Join(gs.galleryDir(galleryID), "*")
+func (gs *GalleryService) Images(galleryUUID string) ([]Image, error) {
+	globPattern := filepath.Join(gs.galleryDir(galleryUUID), "*")
 	allFiles, err := filepath.Glob(globPattern)
 	if err != nil {
 		return nil, fmt.Errorf("retrieving gallery images: %w", err)
@@ -146,7 +147,7 @@ func (gs *GalleryService) Images(galleryID int) ([]Image, error) {
 			images = append(images, Image{
 				Path:      file,
 				Filename:  filepath.Base(file),
-				GalleryID: galleryID,
+				GalleryUUID: galleryUUID,
 			})
 		}
 	}
@@ -164,8 +165,8 @@ func hasExtension(file string, extensions []string) bool {
 	return false
 }
 
-func (gs *GalleryService) Image(galleryID int, filename string) (Image, error) {
-	imagePath := filepath.Join(gs.galleryDir(galleryID), filename)
+func (gs *GalleryService) Image(galleryUUID string, filename string) (Image, error) {
+	imagePath := filepath.Join(gs.galleryDir(galleryUUID), filename)
 	_, err := os.Stat(imagePath)
 	if err != nil {
 		if errors.Is(err, fs.ErrNotExist) {
@@ -175,7 +176,7 @@ func (gs *GalleryService) Image(galleryID int, filename string) (Image, error) {
 	}
 	return Image{
 		Filename:  filename,
-		GalleryID: galleryID,
+		GalleryUUID: galleryUUID,
 		Path:      imagePath,
 	}, nil
 }
@@ -187,7 +188,7 @@ func (gs *GalleryService) extensions() []string {
 func (gs *GalleryService) imageContentTypes() []string {
 	return []string{"image/png", "image/gif", "image/jpeg", "image/jpg"}
 }
-func (gs *GalleryService) CreateImage(galleryID int, filename string, contents io.ReadSeeker) error {
+func (gs *GalleryService) CreateImage(galleryUUID string, filename string, contents io.ReadSeeker) error {
 	err := checkContentType(contents, gs.imageContentTypes())
 	if err != nil {
 		return fmt.Errorf("creating image: %w", err)
@@ -197,7 +198,7 @@ func (gs *GalleryService) CreateImage(galleryID int, filename string, contents i
 		return fmt.Errorf("creating image: %w", err)
 	}
 
-	galleryDir := gs.galleryDir(galleryID)
+	galleryDir := gs.galleryDir(galleryUUID)
 	err = os.MkdirAll(galleryDir, 0755)
 	if err != nil {
 		return fmt.Errorf("creating gallery image directory: %w", err)
@@ -215,8 +216,8 @@ func (gs *GalleryService) CreateImage(galleryID int, filename string, contents i
 	return nil
 }
 
-func (gs *GalleryService) DeleteImage(galleryID int, filename string) error {
-	image, err := gs.Image(galleryID, filename)
+func (gs *GalleryService) DeleteImage(galleryUUID string, filename string) error {
+	image, err := gs.Image(galleryUUID, filename)
 	if err != nil {
 		return fmt.Errorf("deleting image: %w", err)
 	}
