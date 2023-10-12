@@ -1,8 +1,8 @@
 -- +goose Up
 -- +goose StatementBegin
 CREATE EXTENSION IF NOT EXISTS "pgcrypto";
-ALTER TABLE galleries ADD COLUMN uuid TEXT;
-UPDATE galleries SET uuid = substr(gen_random_uuid()::text, 1, 10);
+ALTER TABLE galleries ADD COLUMN uuid TEXT DEFAULT substr(gen_random_uuid()::text, 1, 8);
+UPDATE galleries SET uuid = substr(gen_random_uuid()::text, 1, 8);
 -- +goose StatementEnd
 
 -- +goose Down
