@@ -1,40 +1,23 @@
-# PHOTOSHARING WEBSITE
+#PlumePhotos.com
 
-docker compose down --remove-orphans
+###Overview
+PlumePhotos is a robust web application crafted entirely in Go. It includes: full user authentication (CSRF, XSS, Cookies and Sessions), postgreSQL, image uploads and shareable/private galleries (CRUD).
 
-docker compose -f docker-compose.yml -f docker-compose.production.yml up
+Key Features
 
-goose create 'name' sql
+User Management:
+Registration: Allows new users to sign up and join the platform.
+Login/Logout: Secure authentication system for users to access their profiles.
+Profile Management: Users can manage their profiles, updating personal details as needed.
+Password Reset: Provides users with the ability to reset forgotten passwords.
 
-```connect to postgres docker```
-docker exec -it website-db-1 psql -U postgres -d website 
+Gallery Management:
+CRUD Operations: Users can create, read, update, and delete galleries.
+Image Upload: Supports image uploads, allowing users to add visuals to their galleries.
 
-```to create user table postgres```
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    age INT,
-    first_name TEXT,
-    last_name TEXT,
-    email TEXT UNIQUE NOT NULL,
-)
+Template Rendering:
+Efficient rendering of views using templates.
+Caching support for improved performance.
 
-```insert into table```
-INSERT INTO users VALUES (1, 22, 'John','Smith','john@smith.com');
-```or this way```
-INSERT INTO users(id, email, password_hash)
-VALUES (2, 'gav@gmail.com', 'gfdsfgsfdfsdfdsf232323');
-
-```udpate record```
-UPDATE users SET first_name = 'gavin' WHERE id = 1;
-
-```delete record```
-DELETE FROM users WHERE id=1;
-
-```alter existing table```
-ALTER TABLE sessions ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id);
-
-```droplet```
-ssh -i ./c/Users/______/.ssh/id_rsa root@____
-
-```docker compose```
-docker compose -f docker-compose.yml -f docker-compose.production.yml logs
+Cookie Management:
+Robust cookie handling for session management and enhanced user experience.
