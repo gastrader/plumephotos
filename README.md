@@ -1,40 +1,14 @@
-# PHOTOSHARING WEBSITE
+# PlumePhotos.com
 
-docker compose down --remove-orphans
+![image](https://github.com/gastrader/website/assets/37260212/35fa85d2-56e0-4f9a-b1c4-ad38653d0a2c)
 
-docker compose -f docker-compose.yml -f docker-compose.production.yml up
+## Overview
+PlumePhotos is a robust web application crafted entirely in Go. It includes: full user authentication (CSRF, XSS, Cookies and Sessions), postgreSQL, image uploads and shareable/private galleries (CRUD).
+<br>
 
-goose create 'name' sql
+### Key Features
 
-```connect to postgres docker```
-docker exec -it website-db-1 psql -U postgres -d website 
-
-```to create user table postgres```
-CREATE TABLE users (
-    id SERIAL PRIMARY KEY,
-    age INT,
-    first_name TEXT,
-    last_name TEXT,
-    email TEXT UNIQUE NOT NULL,
-)
-
-```insert into table```
-INSERT INTO users VALUES (1, 22, 'John','Smith','john@smith.com');
-```or this way```
-INSERT INTO users(id, email, password_hash)
-VALUES (2, 'gav@gmail.com', 'gfdsfgsfdfsdfdsf232323');
-
-```udpate record```
-UPDATE users SET first_name = 'gavin' WHERE id = 1;
-
-```delete record```
-DELETE FROM users WHERE id=1;
-
-```alter existing table```
-ALTER TABLE sessions ADD CONSTRAINT sessions_user_id_fkey FOREIGN KEY (user_id) REFERENCES users (id);
-
-```droplet```
-ssh -i ./c/Users/______/.ssh/id_rsa root@____
-
-```docker compose```
-docker compose -f docker-compose.yml -f docker-compose.production.yml logs
+* User Management: Registration, Login/Logout, Profile Management, Password Reset
+* Gallery Management: CRUD Operations (Users can create, read, update, and delete images+galleries), Image Upload - Supports image uploads, allowing users to add visuals to their galleries.
+* Template Rendering: Efficient rendering of views using templates, Caching support for improved performance.
+* Cookie Management: Robust cookie handling for session management and enhanced user experience.
