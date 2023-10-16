@@ -1,8 +1,8 @@
-#PlumePhotos.com
+# PlumePhotos.com
 
-###Overview
+### Overview
 PlumePhotos is a robust web application crafted entirely in Go. It includes: full user authentication (CSRF, XSS, Cookies and Sessions), postgreSQL, image uploads and shareable/private galleries (CRUD).
-
+<br>
 Key Features
 
 User Management:
